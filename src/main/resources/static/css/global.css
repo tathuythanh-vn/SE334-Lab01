@@ -1,0 +1,119 @@
+html {
+    font-family: 'Roboto', serif;
+    text-align: center;
+}
+
+#seat-legend {
+    display: flex;
+    gap: 2rem;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+#available-seat, #booked-seat {
+    position: relative;
+    padding-left: 25px;
+}
+
+#available-seat::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 0;
+    background-color: grey;
+}
+
+#booked-seat::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 0;
+    background-color: darkred;
+}
+
+#seats-container {
+    display: grid;
+    max-width: 600px;
+    margin: 2rem auto;
+    grid-template-columns: repeat(10, 50px);
+    gap: 1rem;
+    justify-content: center;
+}
+
+.seat-component {
+    color: white;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    cursor: pointer;
+    outline: none;
+}
+
+.seat-component:hover {
+    background-color: #404040;
+}
+
+.booked {
+    background-color: darkred;
+}
+
+.available {
+    background-color: grey;
+}
+
+.selected {
+    background-color: green;
+}
+
+
+
+
+#buttons {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem auto;
+    padding-left: 400px;
+    width: fit-content;
+}
+
+#cancel-btn, #book-btn {
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+#cancel-btn {
+    border: none;
+    color: black;
+    background-color: transparent;
+}
+
+#book-btn {
+    border: 1px solid green;
+    background-color: green;
+    color: white;
+}
+
+#back-btn {
+    color: black;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1rem;
+}
+
+#back-btn:hover {
+    color: #404040;
+    text-decoration: underline;
+}

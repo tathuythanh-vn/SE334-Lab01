@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Movie - Plex</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <link rel="icon" th:href="@{/image/movie-icon.png}" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .movie-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            overflow: clip;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-image {
+            width: 100%;
+            height: 400px;
+            object-fit: fill;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .movie-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .movie-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-genre {
+            color: #666;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #hero-image {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #hero-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            color: white;
+            width: 40%;
+            min-height: 100vh;
+            padding-left: 10%;
+            z-index: 10;
+            padding-top: 80px;
+        }
+
+        #hero-section h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: left;
+            text-wrap: balance;
+        }
+
+        #hero-section p {
+            font-size: 1.5rem;
+            text-align: left;
+            text-wrap: balance;
+            margin-bottom: 2rem;
+        }    
+
+        #black-overlay {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.6);
+            background-image: linear-gradient(90deg, rgba(34, 34, 34, 0.8) 50%, rgba(85, 85, 85, 0.4));
+        }
+
+        #book-now-btn {
+            background-color: yellow;
+            color: rgb(118, 26, 26);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: fit-content;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        #book-now-btn:hover {
+            background-color: #ffd700;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+            background: white;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">Movie Booking</a>
+        <div class="navbar-nav">
+            <a th:href="@{/tickets}" class="nav-link">My Tickets</a>
+            <a th:href="@{/cart}" class="nav-link">Cart</a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <section>
+        <img id="hero-image" th:src="@{/image/movies/movies-background.jpg}" alt="hero-image">
+        <div id="black-overlay"></div>
+        <div id="hero-section">
+            <h1>Book Tickets to Your Favorite Movies</h1>
+            <p>The perfect night out is just a few taps away. Discover showtimes, pick your seats, and book your movie tickets—all in one place.</p>
+            <a th:href="@{/movie#movie}" id="book-now-btn">Book Now</a> 
+        </div>
+    </section>
+    <main id="movie">
+        <div class="header">
+            <h1>Choose Your Movie</h1>
+            <p>Select a movie to proceed with booking</p>
+        </div>
+    
+        <div class="movie-grid">
+            <a th:each="movie : ${movies}" 
+               th:href="@{/tickets/} + '?movieId=' + ${movie.id}" 
+               class="movie-card">
+                <img th:src="@{${movie.imageUrl}}" th:alt="${movie.title}" class="movie-image">
+                <div class="movie-info">
+                    <div class="movie-title" th:text="${movie.title}">Movie Title</div>
+                    <div class="movie-genre" th:text="${movie.genre}">Genre</div>
+                </div>
+            </a>
+        </div>
+    </main>
+</body>
+</html> 
